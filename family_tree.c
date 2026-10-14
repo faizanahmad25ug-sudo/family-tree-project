@@ -104,6 +104,14 @@ void print_family_relationships(const Person *me)
     }
 }
 
+void free_family_tree(Person *people[], int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        free(people[i]);
+    }
+}
+
 int main()
 {
     char name[50];
@@ -117,31 +125,24 @@ int main()
     Person *mother;
     Person *yourself;
 
-    /* Input for paternal grandfather */
     read_person_info("Paternal Grandfather", name, &age);
     paternal_grandfather = create_person(name, age);
 
-    /* Input for paternal grandmother */
     read_person_info("Paternal Grandmother", name, &age);
     paternal_grandmother = create_person(name, age);
 
-    /* Input for maternal grandfather */
     read_person_info("Maternal Grandfather", name, &age);
     maternal_grandfather = create_person(name, age);
 
-    /* Input for maternal grandmother */
     read_person_info("Maternal Grandmother", name, &age);
     maternal_grandmother = create_person(name, age);
 
-    /* Input for father */
     read_person_info("Father", name, &age);
     father = create_person(name, age);
 
-    /* Input for mother */
     read_person_info("Mother", name, &age);
     mother = create_person(name, age);
 
-    /* Input for yourself */
     read_person_info("Yourself", name, &age);
     yourself = create_person(name, age);
 
@@ -163,14 +164,19 @@ int main()
     /* Print family relationships */
     print_family_relationships(yourself);
 
-    /* Temporary cleanup */
-    free(paternal_grandfather);
-    free(paternal_grandmother);
-    free(maternal_grandfather);
-    free(maternal_grandmother);
-    free(father);
-    free(mother);
-    free(yourself);
+    /* Store all people in an array */
+    Person *people[7] = {
+        paternal_grandfather,
+        paternal_grandmother,
+        maternal_grandfather,
+        maternal_grandmother,
+        father,
+        mother,
+        yourself
+    };
+
+    /* Free all allocated memory */
+    free_family_tree(people, 7);
 
     return 0;
 }
