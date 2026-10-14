@@ -9,6 +9,7 @@ typedef struct Person {
     struct Person *mother;
 } Person;
 
+// Create a person
 Person* create_person(const char *name, int age)
 {
     Person *person = malloc(sizeof(Person));
@@ -16,167 +17,79 @@ Person* create_person(const char *name, int age)
     if (person == NULL)
     {
         printf("Memory allocation failed!\n");
-        return NULL;
+        exit(1);
     }
 
     strcpy(person->name, name);
     person->age = age;
-
     person->father = NULL;
     person->mother = NULL;
 
     return person;
 }
 
-void read_person_info(const char *role, char *name_out, int *age_out)
-{
-    printf("Enter name for %s: ", role);
-    fgets(name_out, 50, stdin);
-
-    name_out[strcspn(name_out, "\n")] = '\0';
-
-    printf("Enter age for %s: ", role);
-    scanf("%d", age_out);
-
-    getchar();
-}
-
+// Link father and mother to a child
 void link_parents(Person *child, Person *father, Person *mother)
 {
     child->father = father;
     child->mother = mother;
 }
 
+// Print all family relationships
 void print_family_relationships(const Person *me)
 {
-    printf("\n===== FAMILY RELATIONSHIPS =====\n");
+    printf("\n=== FAMILY TREE RELATIONSHIPS ===\n");
 
-    printf("\nYourself:\n");
-    printf("Name: %s\n", me->name);
-    printf("Age: %d\n", me->age);
+    printf("\n1. YOURSELF:\n");
+    printf("   - Name: %s | Age: %d\n", me->name, me->age);
 
-    printf("\nParents:\n");
+    printf("\n2. PARENTS:\n");
+    printf("   - Father: %s | Age: %d\n",
+           me->father->name, me->father->age);
 
-    if (me->father != NULL)
-    {
-        printf("Father: %s, Age: %d\n",
-               me->father->name,
-               me->father->age);
-    }
+    printf("   - Mother: %s | Age: %d\n",
+           me->mother->name, me->mother->age);
 
-    if (me->mother != NULL)
-    {
-        printf("Mother: %s, Age: %d\n",
-               me->mother->name,
-               me->mother->age);
-    }
+    printf("\n3. PATERNAL GRANDPARENTS (via Father's Pointers):\n");
+    printf("   - Grandfather: %s | Age: %d\n",
+           me->father->father->name,
+           me->father->father->age);
 
-    printf("\nPaternal Grandparents:\n");
+    printf("   - Grandmother: %s | Age: %d\n",
+           me->father->mother->name,
+           me->father->mother->age);
 
-    if (me->father != NULL && me->father->father != NULL)
-    {
-        printf("Grandfather: %s, Age: %d\n",
-               me->father->father->name,
-               me->father->father->age);
-    }
+    printf("\n4. MATERNAL GRANDPARENTS (via Mother's Pointers):\n");
+    printf("   - Grandfather: %s | Age: %d\n",
+           me->mother->father->name,
+           me->mother->father->age);
 
-    if (me->father != NULL && me->father->mother != NULL)
-    {
-        printf("Grandmother: %s, Age: %d\n",
-               me->father->mother->name,
-               me->father->mother->age);
-    }
-
-    printf("\nMaternal Grandparents:\n");
-
-    if (me->mother != NULL && me->mother->father != NULL)
-    {
-        printf("Grandfather: %s, Age: %d\n",
-               me->mother->father->name,
-               me->mother->father->age);
-    }
-
-    if (me->mother != NULL && me->mother->mother != NULL)
-    {
-        printf("Grandmother: %s, Age: %d\n",
-               me->mother->mother->name,
-               me->mother->mother->age);
-    }
-}
-
-void free_family_tree(Person *people[], int count)
-{
-    for (int i = 0; i < count; i++)
-    {
-        free(people[i]);
-    }
+    printf("   - Grandmother: %s | Age: %d\n",
+           me->mother->mother->name,
+           me->mother->mother->age);
 }
 
 int main()
 {
-    char name[50];
-    int age;
+    // Create all 7 people
+    Person *paternal_grandfather = create_person("Ram", 75);
+    Person *paternal_grandmother = create_person("Nagini", 72);
 
-    Person *paternal_grandfather;
-    Person *paternal_grandmother;
-    Person *maternal_grandfather;
-    Person *maternal_grandmother;
-    Person *father;
-    Person *mother;
-    Person *yourself;
+    Person *maternal_grandfather = create_person("Suresh", 78);
+    Person *maternal_grandmother = create_person("Revathi", 74);
 
-    read_person_info("Paternal Grandfather", name, &age);
-    paternal_grandfather = create_person(name, age);
+    Person *father = create_person("Krishna", 48);
+    Person *mother = create_person("Divya", 46);
 
-    read_person_info("Paternal Grandmother", name, &age);
-    paternal_grandmother = create_person(name, age);
+    Person *me = create_person("Chitra", 20);
 
-    read_person_info("Maternal Grandfather", name, &age);
-    maternal_grandfather = create_person(name, age);
+    // Milestone 3: Link the family relationships
+    link_parents(father, paternal_grandfather, paternal_grandmother);
+    link_parents(mother, maternal_grandfather, maternal_grandmother);
+    link_parents(me, father, mother);
 
-    read_person_info("Maternal Grandmother", name, &age);
-    maternal_grandmother = create_person(name, age);
-
-    read_person_info("Father", name, &age);
-    father = create_person(name, age);
-
-    read_person_info("Mother", name, &age);
-    mother = create_person(name, age);
-
-    read_person_info("Yourself", name, &age);
-    yourself = create_person(name, age);
-
-    /* Link grandparents to father */
-    link_parents(father,
-                 paternal_grandfather,
-                 paternal_grandmother);
-
-    /* Link grandparents to mother */
-    link_parents(mother,
-                 maternal_grandfather,
-                 maternal_grandmother);
-
-    /* Link parents to yourself */
-    link_parents(yourself,
-                 father,
-                 mother);
-
-    /* Print family relationships */
-    print_family_relationships(yourself);
-
-    /* Store all people in an array */
-    Person *people[7] = {
-        paternal_grandfather,
-        paternal_grandmother,
-        maternal_grandfather,
-        maternal_grandmother,
-        father,
-        mother,
-        yourself
-    };
-
-    /* Free all allocated memory */
-    free_family_tree(people, 7);
+    // Print family relationships
+    print_family_relationships(me);
 
     return 0;
 }
