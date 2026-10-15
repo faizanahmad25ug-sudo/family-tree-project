@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,6 +70,15 @@ void print_family_relationships(const Person *me)
            me->mother->mother->age);
 }
 
+// Free all family tree memory
+void free_family_tree(Person *people[], int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        free(people[i]);
+    }
+}
+
 int main()
 {
     // Create all 7 people
@@ -88,8 +98,23 @@ int main()
     link_parents(mother, maternal_grandfather, maternal_grandmother);
     link_parents(me, father, mother);
 
+    // Store all 7 people for memory cleanup
+    Person *people[] = {
+        paternal_grandfather,
+        paternal_grandmother,
+        maternal_grandfather,
+        maternal_grandmother,
+        father,
+        mother,
+        me
+    };
+
     // Print family relationships
     print_family_relationships(me);
 
+    // Free all allocated memory
+    free_family_tree(people, 7);
+
     return 0;
 }
+
