@@ -10,7 +10,7 @@ typedef struct Person {
     struct Person *mother;
 } Person;
 
-// Create a person
+
 Person* create_person(const char *name, int age)
 {
     Person *person = malloc(sizeof(Person));
@@ -29,14 +29,13 @@ Person* create_person(const char *name, int age)
     return person;
 }
 
-// Link father and mother to a child
+
 void link_parents(Person *child, Person *father, Person *mother)
 {
     child->father = father;
     child->mother = mother;
 }
 
-// Print all family relationships
 void print_family_relationships(const Person *me)
 {
     printf("\n=== FAMILY TREE RELATIONSHIPS ===\n");
@@ -70,7 +69,7 @@ void print_family_relationships(const Person *me)
            me->mother->mother->age);
 }
 
-// Free all family tree memory
+
 void free_family_tree(Person *people[], int count)
 {
     for (int i = 0; i < count; i++)
@@ -81,7 +80,7 @@ void free_family_tree(Person *people[], int count)
 
 int main()
 {
-    // Create all 7 people
+    
     Person *paternal_grandfather = create_person("Ram", 75);
     Person *paternal_grandmother = create_person("Nagini", 72);
 
@@ -93,12 +92,12 @@ int main()
 
     Person *me = create_person("Chitra", 20);
 
-    // Milestone 3: Link the family relationships
+    
     link_parents(father, paternal_grandfather, paternal_grandmother);
     link_parents(mother, maternal_grandfather, maternal_grandmother);
     link_parents(me, father, mother);
 
-    // Store all 7 people for memory cleanup
+    
     Person *people[] = {
         paternal_grandfather,
         paternal_grandmother,
@@ -109,10 +108,10 @@ int main()
         me
     };
 
-    // Print family relationships
+    
     print_family_relationships(me);
 
-    // Free all allocated memory
+    
     free_family_tree(people, 7);
 
     return 0;
