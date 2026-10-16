@@ -52,4 +52,5 @@ The program displays the details of yourself, your parents, and your four grandp
 
 ## Screenshot
 
-![Program Output](screenshot.png)
+
+![Program Output](output.png.png)
